@@ -1,0 +1,45 @@
+enable 
+configure terminal 
+hostname RT-02
+banner motd "ACESSO APENAS PARA PESSOAS AUTORIZADAS!!"
+enable secret SenhadaEnable
+ip domain-name rede2.local
+crypto key generate rsa general-key modulus 1024
+username ADMINISTRADOR privilege 15 secret SenhaAdmin
+username ESTAGIARIO privilege 1 secret SenhaEst
+interface gigabitEthernet 0/0
+ip address 10.40.10.1 255.255.240.0
+description GERENCIAMENTO REDE-2 
+no shutdown
+exit
+interface serial 0/0/0
+ip address 200.200.100.2 255.255.255.252
+no shutdown 
+exit
+interface serial 0/0/1
+ip address 200.200.100.13 255.255.255.252
+no shutdown 
+exit
+line console 0 
+password SenhadaConsole
+login
+exit
+service password-encryption
+line vty 0 15 
+password SenhadaVTY
+transport input ssh
+exec-timeout 5
+login local 
+exit
+login block-for 180 attempts 3 within 60
+security passwords min-length 8 
+ip route 200.200.100.4 255.255.255.252 200.200.100.1
+ip route 200.200.100.4 255.255.255.252 200.200.100.14
+ip route 200.200.100.8 255.255.255.252 200.200.100.1
+ip route 200.200.100.8 255.255.255.252 200.200.100.14
+ip route 192.168.1.0 255.255.255.224 200.200.100.1
+ip route 192.168.1.0 255.255.255.224 200.200.100.14
+ip route 192.168.0.0 255.255.255.128 200.200.100.1
+ip route 192.168.0.0 255.255.255.128 200.200.100.14
+ip route 172.16.42.0 255.255.254.0 200.200.100.1
+ip route 172.16.42.0 255.255.254.0 200.200.100.14
